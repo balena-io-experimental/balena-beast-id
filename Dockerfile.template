@@ -1,0 +1,24 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-debian:latest
+
+RUN apt-get update && \
+	apt-get install -yq --no-install-recommends \
+	curl \
+	fbi \
+  imagemagick \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Configure things here
+ENV ID_NAME=id \
+	MIN_RES=240 \
+  MAX_RES=320 \
+	API_URL=https://api.qrserver.com/v1/create-qr-code/ \
+	INITSYSTEM=on
+
+WORKDIR /usr/src/app
+
+COPY "$SOURCEFOLDER/app" /usr/src/app
+
+CMD ./enable.sh && \
+	./start.sh && \
+	/bin/bash -c 'echo ${!ID_NAME}' && \
+	sleep infinity
