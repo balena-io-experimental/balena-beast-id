@@ -20,8 +20,12 @@ else
   bg_cl='green'
 
   if [[ `expr length ${!ID_NAME}` -gt 3 ]]; then
-    # add show more button
-    echo too much!
+    # add show more indication
+    echo Variable contents too large to preview.
+    scr_txt="\
+    -gravity SouthEast
+    img/more.png -geometry ${icn_s}+0+0 -composite \
+    "
   else
     # show it in one screen
     scr_txt="\
@@ -33,11 +37,12 @@ else
   fi
 fi
 
-convert -size 320x240 xc:${bg_cl} \
+convert -size ${MAX_RES}x${MIN_RES} xc:${bg_cl} \
   /data/qr.png -composite \
-  img/${icn_n} -geometry ${icn_s}+${MIN_RES}+0 -composite \
+  -gravity NorthEast \
+  img/${icn_n} -geometry ${icn_s}+0+0 -composite \
   ${scr_txt} \
-  render.png
+  main.png
 
 # Display the QR code
-fbi -d /dev/fb1 -T 1 --noverbose render.png
+fbi -d /dev/fb1 -T 1 --noverbose main.png
